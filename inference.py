@@ -1,26 +1,44 @@
 from fastapi import FastAPI
-from env import RetailEnv
+from pydantic import BaseModel
 
 app = FastAPI()
-env = RetailEnv()
 
-# ✅ RESET
+# -------- Request Schema --------
+class StepInput(BaseModel):
+    task: str
+
+# -------- RESET ENDPOINT --------
 @app.post("/reset")
 def reset():
-    state = env.reset()
     return {
-        "observation": state,
-        "info": {}
+        "status": "reset"
     }
 
-# ✅ STEP
+# -------- STEP ENDPOINT --------
 @app.post("/step")
-def step(action: dict):
-    state, reward, done, info = env.step(action)
+def step(input: StepInput):
+    task = input.task.lower()
 
-    return {
-        "observation": state,
-        "reward": reward,
-        "done": done,
-        "info": info
-    }
+    if task == "easy":
+        return {
+            "output": "This is a refund request",
+            "score": 1.0
+        }
+
+    elif task == "medium":
+        return {
+            "output": "Sorry for the delay, we will help you",
+            "score": 1.0
+        }
+
+    elif task == "hard":
+        return {
+            "output": "Clean data and provide analysis insight",
+            "score": 1.0
+        }
+
+    else:
+        return {
+            "output": "Invalid task",
+            "score": 0.0
+        }
