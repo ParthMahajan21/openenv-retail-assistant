@@ -1,22 +1,35 @@
 from env import RetailEnv
+from openai import OpenAI
+import os
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 env = RetailEnv()
 
-def run():
-    for task in ["easy", "medium", "hard"]:
-        obs = env.reset(task)
+def run_task(task):
+    prompt = f"Handle this retail task: {task}"
 
-        if task == "easy":
-            action = {"response": "refund request"}
-        elif task == "medium":
-            action = {"response": "sorry we will help you"}
-        else:
-            action = {"response": "clean data and analysis"}
+    response = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}]
+    )
 
-        obs, reward, done, _ = env.step(action)
+    output = response.choices[0].message.content
 
-        print(f"Task: {task}")
-        print(f"Score: {reward}")
+    result = env.step({
+        "task": task,
+        "response": output
+    })
+
+    return output, result["reward"]
+
 
 if __name__ == "__main__":
-    run()
+    tasks = ["easy", "medium", "hard"]
+
+    for t in tasks:
+        output, score = run_task(t)
+        print(f"TASK: {t}")
+        print(f"AI OUTPUT: {output}")
+        print(f"SCORE: {score}")
+        print("-----------")
