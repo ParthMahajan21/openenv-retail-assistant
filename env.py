@@ -19,6 +19,4 @@ class RetailEnv:
         reward = 1.0 if correct.get(task, "") in response else 0.0
 
         done = True
-        state = {"task": task}
-
-        return state, reward, done, {}
+        return {"task": task}, reward, done, {}
