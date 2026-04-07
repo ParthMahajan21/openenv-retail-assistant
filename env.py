@@ -1,9 +1,11 @@
 class RetailEnv:
     def __init__(self):
         self.tasks = ["easy", "medium", "hard"]
+        self.current_task = None
 
     def reset(self):
-        return {"task": "easy"}
+        self.current_task = "easy"
+        return {"task": self.current_task}
 
     def step(self, action):
         correct_answers = {
@@ -20,8 +22,7 @@ class RetailEnv:
         else:
             reward = 0.0
 
-        return {
-            "reward": reward,
-            "done": True,
-            "info": {}
-        }
+        done = True
+        next_state = {"task": task}
+
+        return next_state, reward, done, {}
