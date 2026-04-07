@@ -5,29 +5,30 @@ from env import RetailEnv
 app = FastAPI()
 env = RetailEnv()
 
-# Dummy model (step endpoint)
-class Action(BaseModel):
-    task: str = "easy"
+# ✅ Request schema
+class StepInput(BaseModel):
+    task: str
     response: str = ""
 
-# ✅ RESET (must accept empty body)
+# ✅ RESET endpoint (STRICT FORMAT)
 @app.post("/reset")
-def reset():
+async def reset():
     state = env.reset()
     return {
-        "state": state
+        "observation": state,   # 🔥 IMPORTANT (NOT "state")
+        "info": {}
     }
 
-# ✅ STEP
+# ✅ STEP endpoint (STRICT FORMAT)
 @app.post("/step")
-def step(action: Action):
+async def step(input: StepInput):
     state, reward, done, info = env.step({
-        "task": action.task,
-        "response": action.response
+        "task": input.task,
+        "response": input.response
     })
 
     return {
-        "state": state,   # ⚠️ changed from next_state
+        "observation": state,   # 🔥 IMPORTANT
         "reward": reward,
         "done": done,
         "info": info
