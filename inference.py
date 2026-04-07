@@ -4,16 +4,22 @@ from env import RetailEnv
 app = FastAPI()
 env = RetailEnv()
 
+# ✅ RESET
 @app.post("/reset")
 def reset():
     state = env.reset()
-    return {"state": state}
+    return {
+        "observation": state,
+        "info": {}
+    }
 
+# ✅ STEP
 @app.post("/step")
 def step(action: dict):
     state, reward, done, info = env.step(action)
+
     return {
-        "state": state,
+        "observation": state,
         "reward": reward,
         "done": done,
         "info": info
