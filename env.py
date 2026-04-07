@@ -1,6 +1,6 @@
 class RetailEnv:
     def __init__(self):
-        self.current_task = "easy"
+        self.current_task = None
 
     def reset(self):
         self.current_task = "easy"
@@ -16,6 +16,9 @@ class RetailEnv:
         task = action.get("task")
         response = action.get("response", "").lower()
 
-        reward = 1.0 if correct[task] in response else 0.0
+        reward = 1.0 if correct.get(task, "") in response else 0.0
 
-        return {"task": task}, reward, True, {}
+        done = True
+        state = {"task": task}
+
+        return state, reward, done, {}
