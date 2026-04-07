@@ -1,34 +1,24 @@
 from fastapi import FastAPI
-from pydantic import BaseModel
 from env import RetailEnv
 
 app = FastAPI()
 env = RetailEnv()
 
-# ✅ Request schema
-class StepInput(BaseModel):
-    task: str
-    response: str = ""
-
-# ✅ RESET endpoint (STRICT FORMAT)
+# ✅ RESET
 @app.post("/reset")
-async def reset():
+def reset():
     state = env.reset()
     return {
-        "observation": state,   # 🔥 IMPORTANT (NOT "state")
-        "info": {}
+        "state": state
     }
 
-# ✅ STEP endpoint (STRICT FORMAT)
+# ✅ STEP
 @app.post("/step")
-async def step(input: StepInput):
-    state, reward, done, info = env.step({
-        "task": input.task,
-        "response": input.response
-    })
+def step(action: dict):
+    state, reward, done, info = env.step(action)
 
     return {
-        "observation": state,   # 🔥 IMPORTANT
+        "state": state,
         "reward": reward,
         "done": done,
         "info": info
