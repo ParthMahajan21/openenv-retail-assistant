@@ -10,9 +10,7 @@ class StepInput(BaseModel):
 # -------- RESET ENDPOINT --------
 @app.post("/reset")
 def reset():
-    return {
-        "status": "reset"
-    }
+    return {}
 
 # -------- STEP ENDPOINT --------
 @app.post("/step")
