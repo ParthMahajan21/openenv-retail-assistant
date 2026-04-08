@@ -1,3 +1,2 @@
-openenv
 fastapi
-uvicorn[standard]
+uvicorn
