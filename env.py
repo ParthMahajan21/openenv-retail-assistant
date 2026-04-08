@@ -1,22 +1,36 @@
-class RetailEnv:
+class RetailAssistantEnv:
     def __init__(self):
-        self.current_task = None
+        self.task = None
 
     def reset(self):
-        self.current_task = "easy"
-        return {"task": self.current_task}
+        return {}
 
     def step(self, action):
-        correct = {
-            "easy": "refund",
-            "medium": "delay",
-            "hard": "analysis"
+        task = action.get("task", "").lower()
+
+        if task == "easy":
+            return {
+                "observation": "This is a refund request",
+                "reward": 1.0,
+                "done": True
+            }
+
+        elif task == "medium":
+            return {
+                "observation": "Sorry for the delay, we will help you",
+                "reward": 1.0,
+                "done": True
+            }
+
+        elif task == "hard":
+            return {
+                "observation": "Clean data and provide analysis insight",
+                "reward": 1.0,
+                "done": True
+            }
+
+        return {
+            "observation": "Invalid task",
+            "reward": 0.0,
+            "done": True
         }
-
-        task = action.get("task")
-        response = action.get("response", "").lower()
-
-        reward = 1.0 if correct.get(task, "") in response else 0.0
-
-        done = True
-        return {"task": task}, reward, done, {}
