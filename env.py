@@ -1,6 +1,6 @@
 class RetailAssistantEnv:
     def __init__(self):
-        self.task = None
+        pass
 
     def reset(self):
         return {}
@@ -12,25 +12,29 @@ class RetailAssistantEnv:
             return {
                 "observation": "This is a refund request",
                 "reward": 1.0,
-                "done": True
+                "done": True,
+                "info": {}
             }
 
         elif task == "medium":
             return {
                 "observation": "Sorry for the delay, we will help you",
                 "reward": 1.0,
-                "done": True
+                "done": True,
+                "info": {}
             }
 
         elif task == "hard":
             return {
                 "observation": "Clean data and provide analysis insight",
                 "reward": 1.0,
-                "done": True
+                "done": True,
+                "info": {}
             }
 
         return {
             "observation": "Invalid task",
             "reward": 0.0,
-            "done": True
+            "done": True,
+            "info": {}
         }
